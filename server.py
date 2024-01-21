@@ -61,7 +61,7 @@ def response(conn):
     packet = f"""HTTP/1.1 200 OK
 Content-Length: {len(data)}
 Content-Type: application/json
-Access-Control-Allow-Origin: http://127.0.0.1:8001
+Access-Control-Allow-Origin: http://127.0.0.1:13781
 
 {data}
 """
@@ -77,7 +77,7 @@ def reset(conn, data):
     packet = """HTTP/1.1 200 OK
 Content-Length: 
 Content-Type: application/json
-Access-Control-Allow-Origin: http://127.0.0.1:8001
+Access-Control-Allow-Origin: http://127.0.0.1:13781
 
 {"status": "ok"}
 """

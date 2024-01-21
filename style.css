@@ -24,7 +24,7 @@
     background: rgb(20,20,20);
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .main__inner {

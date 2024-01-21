@@ -75,6 +75,9 @@ function generateConsole(name) {
 </div>
 `
     document.getElementById("main").innerHTML += console
+    elements = document.getElementsByClassName("console")
+    elementsArray = Array.from(elements)
+    elementsArray.forEach(element => element.querySelector(".console__text").scrollTop = element.querySelector(".console__text").scrollHeight)
 }
 
 async function reset(name) {
