@@ -4,7 +4,6 @@ import os
 from threading import Thread
 
 host = "0.0.0.0"
-hostname = f"http://{socket.gethostname()}:13781"
 
 logs = []
 
@@ -18,7 +17,7 @@ def main():
 def tcp_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server.bind((host, 8888))
+    server.bind((host, 45714))
     server.listen()
     try:
         while True:
@@ -40,7 +39,7 @@ def handle_client(conn):
 def http_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server.bind((host, 9999))
+    server.bind((host, 32616))
     server.listen()
     try:
         while True:
@@ -62,7 +61,7 @@ def response(conn):
     packet = f"""HTTP/1.1 200 OK
 Content-Length: {len(data)}
 Content-Type: application/json
-Access-Control-Allow-Origin: {hostname}
+Access-Control-Allow-Origin: *
 
 {data}
 """
@@ -78,7 +77,7 @@ def reset(conn, data):
     packet = """HTTP/1.1 200 OK
 Content-Length: 
 Content-Type: application/json
-Access-Control-Allow-Origin: {hostname}
+Access-Control-Allow-Origin: *
 
 {"status": "ok"}
 """

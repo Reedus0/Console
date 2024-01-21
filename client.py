@@ -2,7 +2,7 @@ import socket
 import sys
 
 HOST = "0.0.0.0"  
-PORT = 8888  
+PORT = 45714  
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     name = sys.argv[1]
