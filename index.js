@@ -1,15 +1,14 @@
-modified = {}
+const modified = {}
+const api = `http://${document.location.hostname}:9999`
 
 async function poll() {
-    const response = await fetch("http://127.0.0.1:9999")
+    const response = await fetch(api)
     const logs = await response.json()
     update(logs)
 }
 
 function update(logs) {
     for (let arr of logs) {
-        console.log(modified)
-        console.log(logs)
         const bot_name = arr[0]
         if (modified[bot_name] == undefined) {
             generateConsole(bot_name)
@@ -81,7 +80,7 @@ function generateConsole(name) {
 }
 
 async function reset(name) {
-    const response = await fetch("http://127.0.0.1:9999", { method: "POST", body: name.id })
+    const response = await fetch(api, { method: "POST", body: name.id })
     const logs = await response.json()
 }
 
