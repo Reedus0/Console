@@ -45,10 +45,10 @@ def http_server():
         while True:
             conn, addr = server.accept()
             request = conn.recv(1024)
-            request_method = request.decode().split(" ")[0]
-            if (request_method == "GET"):
+            request_path = request.decode().split(" ")[1]
+            if (request_path == "/"):
                 response(conn)
-            else:
+            if (request_path == "/reset"):
                 reset(conn, request.decode())
             conn.close()
     except (KeyboardInterrupt):

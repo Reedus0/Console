@@ -80,7 +80,7 @@ function generateConsole(name) {
 }
 
 async function reset(name) {
-    const response = await fetch(api, { method: "POST", body: name.id })
+    const response = await fetch(api + "/reset", { method: "POST", body: name.id })
     const logs = await response.json()
 }
 
