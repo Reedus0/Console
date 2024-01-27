@@ -1,5 +1,6 @@
+/* trunk-ignore-all(prettier) */
 const modified = {}
-const api = `http://${document.location.hostname}:32616`
+const api = `/api/getLogs`
 
 async function poll() {
     const response = await fetch(api)
@@ -9,31 +10,35 @@ async function poll() {
 
 function update(logs) {
     for (let arr of logs) {
-        const bot_name = arr[0]
-        if (modified[bot_name] == undefined) {
-            generateConsole(bot_name)
-            modified[bot_name] = 0
-            setInterval(() => {
-                modified[bot_name] += 1
-                document.getElementById(bot_name).querySelector(".console__date-text").innerHTML = `${modified[bot_name]} seconds ago`
-            }, 1000)
-        }
-        modified[bot_name] = 0
-        const element = document.getElementById(bot_name)
-        const consoleText = element.querySelector(".console__text")
-        arr = arr.filter((ell, index) => index != 0)
-        arr = arr.map((ell) => {
-            msg = ell.split(" ")
-            type = msg.shift()
-            filteredMsg = msg.join(" ").replace("<", "&lt;").replace(">", "&gt;").replace("/", "&#x2F;").replace("\\", "&#39;")
-            if (type === "INFO") return `<p class="console__info">${filteredMsg}</p>`
-            if (type === "ERROR") return `<p class="console__error">${filteredMsg}</p>`
-            return `<p class="console__msg>${filteredMsg}</p3>`
-        })
+        console.log(arr);
+        const bot_name = arr.name
+        if (modified[bot_name] != arr.timestamp) {
+            if (modified[bot_name] == undefined) {
+                generateConsole(bot_name)
+                    //rouind to integer
+                modified[bot_name] = arr.timestamp
+                setInterval(() => {
+                    document.getElementById(bot_name).querySelector(".console__date-text").innerHTML = `${Math.round(Date.now() / 1000 - modified[bot_name])} seconds ago`
+                }, 1000)
+            }
+            modified[bot_name] = arr.timestamp
+            const element = document.getElementById(bot_name)
+            const consoleText = element.querySelector(".console__text")
+                //reverse arr
+            arr = arr.logs.split("\n").reverse()
+            arr = arr.map((ell) => {
+                msg = ell.split(" ")
+                type = msg.shift()
+                filteredMsg = msg.join(" ").replace("<", "&lt;").replace(">", "&gt;").replace("/", "&#x2F;").replace("\\", "&#39;")
+                if (type === "INFO") return `<p class="console__info">${filteredMsg}</p>`
+                if (type === "ERROR") return `<p class="console__error">${filteredMsg}</p>`
+                return `<p class="console__msg>${filteredMsg}</p3>`
+            })
 
-        element.classList.add("_anim")
-        consoleText.innerHTML = arr.join("<br>")
-        consoleText.scrollTop = consoleText.scrollHeight
+            element.classList.add("_anim")
+            consoleText.innerHTML = arr.join("<br>")
+            consoleText.scrollTop = consoleText.scrollHeight
+        }
     }
 
     elements = document.getElementsByClassName("console")
