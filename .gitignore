@@ -1,3 +1,4 @@
 .trunk/*
 .vscode/*
 server.exe
+__pycache__/*
