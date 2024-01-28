@@ -1,38 +1,41 @@
 /* trunk-ignore-all(prettier) */
 const modified = {}
-const api = `/api/getLogs`
+const api = `/api`
 
 async function poll() {
-    const response = await fetch(api)
+    const response = await fetch(api + "/getLogs")
     const logs = await response.json()
     update(logs)
 }
 
 function update(logs) {
-    for (let arr of logs) {
-        console.log(arr);
-        const bot_name = arr.name
-        if (modified[bot_name] != arr.timestamp) {
+    for (let k in logs) {
+        arr = logs[k]
+        const bot_name = arr.Name
+        if (modified[bot_name] != arr.Timestamp) {
+            console.log(arr);
             if (modified[bot_name] == undefined) {
                 generateConsole(bot_name)
                     //rouind to integer
-                modified[bot_name] = arr.timestamp
+                modified[bot_name] = arr.Timestamp
                 setInterval(() => {
                     document.getElementById(bot_name).querySelector(".console__date-text").innerHTML = `${Math.round(Date.now() / 1000 - modified[bot_name])} seconds ago`
                 }, 1000)
             }
-            modified[bot_name] = arr.timestamp
+            modified[bot_name] = arr.Timestamp
             const element = document.getElementById(bot_name)
             const consoleText = element.querySelector(".console__text")
                 //reverse arr
-            arr = arr.logs.split("\n").reverse()
+            arr = arr.Logs.reverse()
             arr = arr.map((ell) => {
                 msg = ell.split(" ")
                 type = msg.shift()
+                console.log(type);
                 filteredMsg = msg.join(" ").replace("<", "&lt;").replace(">", "&gt;").replace("/", "&#x2F;").replace("\\", "&#39;")
                 if (type === "INFO") return `<p class="console__info">${filteredMsg}</p>`
                 if (type === "ERROR") return `<p class="console__error">${filteredMsg}</p>`
-                return `<p class="console__msg>${filteredMsg}</p3>`
+                if (type === "WARN") return `<p class="console__warn">${filteredMsg}</p>`
+                return `<p class="console__msg">${filteredMsg}</p>`
             })
 
             element.classList.add("_anim")
@@ -43,7 +46,7 @@ function update(logs) {
 
     elements = document.getElementsByClassName("console")
     elementsArray = Array.from(elements)
-    setTimeout(() => elementsArray.forEach(element => element.classList.remove("_anim")), 1000)
+    setTimeout(() => elementsArray.forEach(element => element.classList.remove("_anim")), 300)
 }
 
 function format_date(date) {
@@ -86,7 +89,6 @@ function generateConsole(name) {
 
 async function reset(name) {
     const response = await fetch(api + "/reset", { method: "POST", body: name.id })
-    const logs = await response.json()
 }
 
 setInterval(poll, 2000)

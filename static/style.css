@@ -29,7 +29,7 @@
 
 .main__inner {
   padding: 15px;
-  width: 90vw;
+  /* width: 90vw; */
 
   display: flex;
   justify-content: center;
@@ -198,9 +198,11 @@
 }
 
 .console__error {
-  color: rgb(236, 121, 116);
+  color: rgb(255, 55, 45);
 }
-
+.console__warn {
+  color: rgb(255, 162, 41);
+}
 .console__msg {
-  color: black;
+  color: rgb(194, 194, 194);
 }

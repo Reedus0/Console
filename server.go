@@ -4,8 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
+	"os"
+	"os/exec"
 	"runtime/debug"
 	"strings"
 	"time"
@@ -23,6 +26,11 @@ type Bot struct {
 	Timestamp int64
 }
 
+func (s *Bot) Json() string {
+	bts, _ := json.Marshal(s)
+	return string(bts)
+
+}
 func (s *Bot) AddLog(log string) {
 	ic.Ic(s.Name, log)
 	s.Logs = [10]string{log, s.Logs[0], s.Logs[1], s.Logs[2], s.Logs[3], s.Logs[4], s.Logs[5], s.Logs[6], s.Logs[7], s.Logs[8]}
@@ -38,7 +46,7 @@ func (s *Bot) GetLogs() string {
 }
 
 func handleConnection(conn net.Conn) {
-	var bot = &Bot{}
+	var bot *Bot
 	/* trunk-ignore(golangci-lint/ineffassign) */
 
 	data := make([]byte, 1024)
@@ -116,22 +124,30 @@ func TcpLogsServer() {
 	}
 }
 
+func RunShell(name string, arg ...string) int {
+	c := exec.Command(name, arg...)
+	if err := c.Run(); err != nil {
+		fmt.Println("Error: ", err)
+		return 1
+	}
+	return 0
+}
+
 type apiHandler struct{}
 
 func (h *apiHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	ic.Ic(req)
-	ic.Ic(req.URL)
 	switch req.URL.Path {
 	case "/getLogs":
-		data := `[`
-		for _, bot := range Bots {
-			bot_json := `{"name":"` + bot.Name + `","logs":` + bot.GetLogs() + `,"timestamp":` + fmt.Sprint(bot.Timestamp) + `},`
-			data += bot_json
-		}
+		data, _ := json.Marshal(Bots)
 		//remove last char
-		data = data[:len(data)-1]
-		data += `]`
-		fmt.Fprint(w, data)
+		fmt.Fprint(w, string(data))
+	case "/reset":
+		ic.Ic("reset")
+		body, _ := io.ReadAll(req.Body)
+		name := string(body)
+		ic.Ic(name)
+		RunShell("bash", "scripts/reset.sh", name)
+
 	default:
 		fmt.Fprint(w, "hello world")
 
@@ -151,6 +167,11 @@ func HttpLogsServer() {
 	ic.Ic(srv.ListenAndServe())
 }
 func main() {
-	go TcpLogsServer()
-	HttpLogsServer()
+	args := os.Args
+	ic.Ic(args)
+	switch len(args) {
+	case 1:
+		go TcpLogsServer()
+		HttpLogsServer()
+	}
 }
