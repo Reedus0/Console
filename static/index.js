@@ -13,13 +13,17 @@ function update(logs) {
         arr = logs[k]
         const bot_name = arr.Name
         if (modified[bot_name] != arr.Timestamp) {
-            console.log(arr);
             if (modified[bot_name] == undefined) {
                 generateConsole(bot_name)
                     //rouind to integer
                 modified[bot_name] = arr.Timestamp
                 setInterval(() => {
                     document.getElementById(bot_name).querySelector(".console__date-text").innerHTML = `${Math.round(Date.now() / 1000 - modified[bot_name])} seconds ago`
+                    rd = Math.round(Date.now() / 1000 - modified[bot_name]) * 10
+                    if (rd > 255)
+                        rd = 255
+                    grn = 255 - rd
+                    document.getElementById(bot_name + "_title").style.color = `rgba(${rd},${grn},0,1)`
                 }, 1000)
             }
             modified[bot_name] = arr.Timestamp
@@ -30,7 +34,6 @@ function update(logs) {
             arr = arr.map((ell) => {
                 msg = ell.split(" ")
                 type = msg.shift()
-                console.log(type);
                 filteredMsg = msg.join(" ").replace("<", "&lt;").replace(">", "&gt;").replace("/", "&#x2F;").replace("\\", "&#39;")
                 if (type === "INFO") return `<p class="console__info">${filteredMsg}</p>`
                 if (type === "ERROR") return `<p class="console__error">${filteredMsg}</p>`
@@ -71,7 +74,7 @@ function generateConsole(name) {
         </div>
         <div class="console__console">
             <div class="console__name">
-                <h3 class="console__title">${name}</h3>
+                <h3 id="${name}_title" class="console__title" style="color:rgba(255,255,255,1)">${name}</h3>
             </div>
             <div class="console__date">
                 <h3 class="console__title console__date-text"></h3>

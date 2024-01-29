@@ -172,7 +172,7 @@
 }
 
 .console__console {
-  width: 100%;
+  width: calc(100% - 42px);
 }
 
 .console__text {
