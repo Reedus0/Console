@@ -3,7 +3,7 @@ import sys
 import random
 
 HOST = "deb"
-HOST = "127.0.0.1"
+#HOST = "127.0.0.1"
 PORT = 12225
 letters = "qwertyuiopasdfghjklzxcvbnmйцукенгшщзхъфывапролджэячсмитьбюQWERTYUIOPASDFGHJKLZXCVBNMЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ 1234567890!@#$%^&*()"
 def test(name):

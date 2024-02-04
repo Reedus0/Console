@@ -5,7 +5,7 @@ import client
 
 
 def main():
-    workers = 100
+    workers = 250
     for _ in range(workers):
         # trunk-ignore(bandit/B311)
         Thread(target=client.test, args=("botnumber" + str(random.randint(1, 300)),)).start()
