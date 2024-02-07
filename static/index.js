@@ -30,11 +30,11 @@ function update(logs) {
             const element = document.getElementById(bot_name)
             const consoleText = element.querySelector(".console__text")
             arr = arr.Logs
-            if (bot_name == "server_log") {
-                arr = arr[0].split("\n")
-                arr = arr.reverse()
+            // if (bot_name == "server_log") {
+            //     arr = arr[0].split("\n")
+            //     arr = arr.reverse()
 
-            }
+            // }
             arr = arr.reverse()
             //reverse arr
             arr = arr.map((ell) => {
@@ -58,6 +58,10 @@ function update(logs) {
     setTimeout(() => elementsArray.forEach(element => element.classList.remove("_anim")), 300)
 }
 
+function deleteConsole(name) {
+    document.getElementById(name).remove()
+    delete modified[name]
+}
 function format_date(date) {
     hour = date.getHours()
     minute = date.getMinutes()
@@ -95,7 +99,7 @@ function generateConsole(name) {
         <div class="console__inner">
             <div class="console__buttons">
                 <button class="console__button" onclick="sendsig('${name}','r')">R</button>
-                <button class="console__button" onclick="sendsig('${name}','d')">D</button>
+                <button class="console__button" onclick="sendsig('${name}','d'); deleteConsole('${name}')">D</button>
                 <button class="console__button" onclick="sendsig('${name}','a')">A</button>
             </div>
             <div class="console__console">

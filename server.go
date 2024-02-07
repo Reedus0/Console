@@ -15,8 +15,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	ic "github.com/WAY29/icecream-go/icecream"
 )
 
 var (
@@ -67,11 +65,11 @@ func (s *Bot) Json() string {
 
 }
 func (s *Bot) AddLog(log string) {
-	ic.Ic(s.Name, log)
-	if s.Name == "server_log" {
-		s.Logs[0] = s.Logs[0] + "\n" + log
-		return
-	}
+	fmt.Println(s.Name, log)
+	// if s.Name == "server_log" {
+	// 	s.Logs[0] = s.Logs[0] + "\n" + log
+	// 	return
+	// }
 	s.Logs = [10]string{log, s.Logs[0], s.Logs[1], s.Logs[2], s.Logs[3], s.Logs[4], s.Logs[5], s.Logs[6], s.Logs[7], s.Logs[8]}
 }
 
@@ -91,17 +89,17 @@ func handleConnection(conn net.Conn) {
 	data := make([]byte, 1024)
 	_, err := conn.Read(data)
 	if err != nil {
-		ic.Ic(err)
+		fmt.Println(err)
 		debug.PrintStack()
 		return
 	}
 	splits := bytes.Split(data, []byte("\x00"))
 	botname := string(splits[0])
 	//check if botname already exists
-	ic.Ic(botname)
+	fmt.Println(botname)
 	if mbot, ok := Bots[botname]; ok {
 		bot = mbot
-		ic.Ic("already exists")
+		fmt.Println("already exists")
 	} else {
 		bot = &Bot{
 			Name:      botname,
@@ -125,9 +123,9 @@ func handleConnection(conn net.Conn) {
 		if err != nil {
 			//check err type
 			if err.Error() == "EOF" {
-				ic.Ic("EOF", bot.Name)
+				fmt.Println("EOF", bot.Name)
 			} else {
-				ic.Ic(err)
+				fmt.Println(err)
 				debug.PrintStack()
 			}
 			return
@@ -148,14 +146,14 @@ func TcpLogsServer() {
 
 	ln, err := net.Listen("tcp", ":12225")
 	if err != nil {
-		ic.Ic(err)
+		fmt.Println(err)
 		debug.PrintStack()
 		return
 	}
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
-			ic.Ic(err)
+			fmt.Println(err)
 			debug.PrintStack()
 			continue
 		}
@@ -191,7 +189,7 @@ func RunShell(name string, arg ...string) int {
 	scannero := bufio.NewScanner(stdout)
 	if err := c.Start(); err != nil {
 		fmt.Println("Error: ", err)
-		ic.Ic(err)
+		fmt.Println(err)
 		for scannere.Scan() {
 			loge(scannere.Text())
 		}
@@ -219,48 +217,49 @@ func (h *apiHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		//remove last char
 		fmt.Fprint(w, string(data))
 	case "/sigr":
-		ic.Ic("sigr")
+		fmt.Println("sigr")
 		body, _ := io.ReadAll(req.Body)
 		name := string(body)
-		ic.Ic(name)
+		fmt.Println(name)
 		RestartBot(name)
 		fmt.Fprint(w, "OK")
 
 	case "/sigd":
-		ic.Ic("sigd")
+		fmt.Println("sigd")
 		body, _ := io.ReadAll(req.Body)
 		name := string(body)
-		ic.Ic(name)
-		RunShell("bash", "scripts/csig.sh", name)
+		fmt.Println(name)
+		DeleteBot(name)
+		// RunShell("bash", "scripts/csig.sh", name)
 	case "/siga":
-		ic.Ic("siga")
+		fmt.Println("siga")
 		body, _ := io.ReadAll(req.Body)
 		name := string(body)
-		ic.Ic(body)
+		fmt.Println(body)
 		if name == "all" {
 			RestartBots()
 			fmt.Fprint(w, "OK")
 		} else {
-			ic.Ic(name)
+			fmt.Println(name)
 			fmt.Fprint(w, "OK")
 			RunShell("bash", "scripts/asig.sh", name)
 		}
 	case "/autoReg":
-		ic.Ic("autoReg")
+		fmt.Println("autoReg")
 		body, _ := io.ReadAll(req.Body)
 		data := strings.Split(string(body), "\n")
 		prefix, count, folder, tables := data[0], data[1], data[2], data[3]
-		ic.Ic(prefix, count, folder, tables)
+		fmt.Println(prefix, count, folder, tables)
 		RunShell("/usr/local/bin/python", "scripts/autoreg.py", prefix, count, folder, tables)
 		fmt.Fprint(w, "OK")
 
 	case "/getFolders":
 		Fdatas := []FilderData{}
-		ic.Ic("getFolders")
+		fmt.Println("getFolders")
 		files, _ := os.ReadDir("../data")
 		for _, file := range files {
 			tmp := FilderData{}
-			ic.Ic(file.Name())
+			fmt.Println(file.Name())
 			tmp.Name = file.Name()
 			tmp.BotsCount = 0
 			files2, _ := os.ReadDir("../data/" + file.Name())
@@ -294,9 +293,31 @@ func HttpLogsServer() {
 		Addr:    ":8080",
 		Handler: mux,
 	}
-	ic.Ic(srv.ListenAndServe())
+	fmt.Println(srv.ListenAndServe())
 }
 
+func DeleteBot(name string) {
+	files, _ := os.ReadDir("/data")
+	cont, id := FindBotContainer(name)
+	KillBot(id, cont)
+	for bot := range Bots {
+		if bot == name {
+			delete(Bots, name)
+		}
+	}
+	for _, file := range files {
+		if file.IsDir() {
+			ffiles, _ := os.ReadDir("/data/" + file.Name())
+			for _, ffile := range ffiles {
+				if ffile.Name() == "start_"+name+".sh" {
+					//remove file
+					os.Remove("/data/" + file.Name() + "/" + ffile.Name())
+					return
+				}
+			}
+		}
+	}
+}
 func FindBotContainer(name string) (string, int) {
 	docOut := GetOut("docker", "ps", "-a", "--format", "&{{.Names}}")
 
@@ -307,7 +328,7 @@ func FindBotContainer(name string) (string, int) {
 		_id := re.FindStringSubmatch(docOut)
 		if len(_id) > 0 {
 			id, _ := strconv.Atoi(_id[1])
-			ic.Ic(id)
+			fmt.Println(id)
 			return namep, id
 		}
 
@@ -324,7 +345,7 @@ func StartBot(name, cont string) {
 }
 func RestartBot(name string) {
 	cont, id := FindBotContainer(name)
-	ic.Ic(cont, id)
+	fmt.Println(cont, id)
 	KillBot(id, cont)
 	StartBot(name, cont)
 }
@@ -335,10 +356,10 @@ func RestartBots() {
 		if line == "" {
 			continue
 		}
-		ic.Ic(line)
+		fmt.Println(line)
 		fields := strings.Split(line, "*")
 		id, image := fields[0], fields[1]
-		ic.Ic(id, image)
+		fmt.Println(id, image)
 		if image == "pp" {
 			RunShell("docker", "restart", id)
 		}
@@ -347,7 +368,7 @@ func RestartBots() {
 }
 func main() {
 	args := os.Args
-	ic.Ic(args)
+	fmt.Println(args)
 	switch len(args) {
 	case 1:
 		go TcpLogsServer()
