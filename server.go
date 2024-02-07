@@ -242,8 +242,14 @@ func (h *apiHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		} else {
 			fmt.Println(name)
 			fmt.Fprint(w, "OK")
-			RunShell("bash", "scripts/asig.sh", name)
+			AutoReplase(name)
+			//RunShell("bash", "scripts/asig.sh", name)
 		}
+	case "/sigclear":
+		fmt.Println("sigclear")
+		clearCache()
+		log("cache cleared")
+		fmt.Fprint(w, "OK")
 	case "/autoReg":
 		fmt.Println("autoReg")
 		body, _ := io.ReadAll(req.Body)
@@ -295,8 +301,21 @@ func HttpLogsServer() {
 	}
 	fmt.Println(srv.ListenAndServe())
 }
+func AutoReplase(name string) {
+	data, folder := DeleteBot(name)
+	re := regexp.MustCompile(`[^ ]+ [^ ]+ [^ ]+ [^ ]+ "([^"]+)"`)
+	tables := re.FindStringSubmatch(data)[1]
+	out := GetOut("/usr/local/bin/python", "scripts/autoreg.py", "replase", "1", folder, tables)
+	re = regexp.MustCompile(`{([^}]+)}`)
+	logins := re.FindStringSubmatch(out)
+	for _, cont := range GetContainers() {
+		if strings.HasPrefix(cont, "pp") {
+			StartBot(logins[1], cont)
+		}
+	}
+}
 
-func DeleteBot(name string) {
+func DeleteBot(name string) (string, string) {
 	files, _ := os.ReadDir("/data")
 	cont, id := FindBotContainer(name)
 	KillBot(id, cont)
@@ -311,17 +330,18 @@ func DeleteBot(name string) {
 			for _, ffile := range ffiles {
 				if ffile.Name() == "start_"+name+".sh" {
 					//remove file
+					file_data, _ := os.ReadFile("/data/" + file.Name() + "/" + ffile.Name())
 					os.Remove("/data/" + file.Name() + "/" + ffile.Name())
-					return
+					return string(file_data), file.Name()
 				}
 			}
 		}
 	}
+	return "", ""
 }
 func FindBotContainer(name string) (string, int) {
-	docOut := GetOut("docker", "ps", "-a", "--format", "&{{.Names}}")
 
-	for _, namep := range strings.Split(docOut, "&") {
+	for _, namep := range GetContainers() {
 
 		docOut := GetOut("docker", "exec", "-i", namep, "ps", "--no-headers", "-eo", "pid,cmd")
 		re := regexp.MustCompile(`(?P<first>\d+) python main.py ` + name + " " + name)
@@ -336,6 +356,11 @@ func FindBotContainer(name string) (string, int) {
 	return "", 0
 }
 
+func GetContainers() []string {
+	docOut := GetOut("docker", "ps", "-a", "--format", "&{{.Names}}")
+	return strings.Split(docOut, "&")
+}
+
 func KillBot(pid int, cont string) {
 	RunShell("docker", "exec", cont, "kill", "-9", strconv.Itoa(pid))
 
@@ -348,6 +373,25 @@ func RestartBot(name string) {
 	fmt.Println(cont, id)
 	KillBot(id, cont)
 	StartBot(name, cont)
+}
+
+func clearCache() {
+	files, _ := os.ReadDir("/data")
+	for _, file := range files {
+		if file.IsDir() {
+			ffiles, _ := os.ReadDir("/data/" + file.Name())
+			for _, ffile := range ffiles {
+				if ffile.Name() == "cache" {
+					//remove all files in cache folder
+					cacheFiles, _ := os.ReadDir("/data/" + file.Name() + "/cache")
+					for _, cacheFile := range cacheFiles {
+						os.Remove("/data/" + file.Name() + "/cache/" + cacheFile.Name())
+					}
+				}
+			}
+		}
+
+	}
 }
 func RestartBots() {
 	docOut := GetOut("docker", "ps", "-a", "--format", "&{{.ID}}*{{.Image}}")
@@ -376,6 +420,18 @@ func main() {
 		go log("server started")
 		HttpLogsServer()
 	default:
-		RestartBot("sssspchz1xg")
+		data := `python main.py "testdjf2l60gi2" "testdjf2l60gi2" "50K 500K 1M 5M 20M" "80.243.133.41:8000:U5apE5:9aETez" "45.132.21.144:8000:1znyDA:AfmfRG"
+		`
+		re := regexp.MustCompile(`[^ ]+ [^ ]+ [^ ]+ [^ ]+ "([^"]+)"`)
+		tables := re.FindStringSubmatch(data)
+		fmt.Println(tables)
+		fmt.Println(tables[0])
+		fmt.Println(tables[1])
+		folder := "bot6"
+		a := GetOut("/usr/local/bin/python", "scripts/autoreg.py", "replase", "1", folder, tables[1])
+		re = regexp.MustCompile(`{([^}]+)}`)
+		logins := re.FindStringSubmatch(a)
+
+		fmt.Println(logins[1])
 	}
 }

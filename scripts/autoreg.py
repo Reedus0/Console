@@ -110,6 +110,8 @@ def add(login, password="", tables="", proxy1="", proxy2="", folder="bot1"):
 
     # chack if os is linux
     if os.name != "nt":
+        print("{"+login+"}")
+
         with open(f"/data/{folder}/start_{login}.sh", "w") as f:
             f.write(f"""python main.py "{login}" "{password}" "{tables}" "{proxy1}" "{proxy2}"
 """)
@@ -151,7 +153,7 @@ def _get_proxyes():
     proxs = prox_sess.get("https://advanced.name/freeproxy/65c1c9eb9ae92").text.split()
     return proxs    
 
-def auto_reg(prefix,tables, folder):
+def auto_reg(prefix, tables, folder):
     try:
         p = PROXYES.pop(random.randint(0, len(PROXYES) - 1))
         try:
@@ -165,7 +167,6 @@ def auto_reg(prefix,tables, folder):
             add(login, tables=tables, folder=folder)
             return 0
         else:
-            logger.log(reg_res)
             return auto_reg(prefix,tables, folder)
     except Exception as e:
         return e
