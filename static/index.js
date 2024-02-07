@@ -15,22 +15,28 @@ function update(logs) {
         if (modified[bot_name] != arr.Timestamp) {
             if (modified[bot_name] == undefined) {
                 generateConsole(bot_name)
-                    //rouind to integer
+                //rouind to integer
                 modified[bot_name] = arr.Timestamp
                 setInterval(() => {
                     document.getElementById(bot_name).querySelector(".console__date-text").innerHTML = `${Math.round(Date.now() / 1000 - modified[bot_name])} seconds ago`
                     rd = Math.round(Date.now() / 1000 - modified[bot_name]) * 10
                     if (rd > 255)
                         rd = 255
-                    grn = 255 - rd
+                    grn = 255 - rd / 2
                     document.getElementById(bot_name + "_title").style.color = `rgba(${rd},${grn},0,1)`
                 }, 1000)
             }
             modified[bot_name] = arr.Timestamp
             const element = document.getElementById(bot_name)
             const consoleText = element.querySelector(".console__text")
-                //reverse arr
-            arr = arr.Logs.reverse()
+            arr = arr.Logs
+            if (bot_name == "server_log") {
+                arr = arr[0].split("\n")
+                arr = arr.reverse()
+
+            }
+            arr = arr.reverse()
+            //reverse arr
             arr = arr.map((ell) => {
                 msg = ell.split(" ")
                 type = msg.shift()
@@ -42,7 +48,7 @@ function update(logs) {
             })
 
             element.classList.add("_anim")
-            consoleText.innerHTML = arr.join("<br>")
+            consoleText.innerHTML = arr.join("")
             consoleText.scrollTop = consoleText.scrollHeight
         }
     }
@@ -65,33 +71,53 @@ function format_date(date) {
 const zeroPad = (num, places) => String(num).padStart(places, '0')
 
 function generateConsole(name) {
-    const console =
-        `
-<div class="console" id="${name}">
-    <div class="console__inner">
-        <div class="console__buttons">
-            <button class="console__button" onclick="reset(${name})">R</button>
+    console = ""
+    if (name == "server_log") {
+        console =
+            `
+        <div class="console" id="${name}">
+        <div class="console__inner">
+            <div class="console__console" style="width:100%">
+                <div class="console__name" style="width:100%">
+                    <h3 id="${name}_title" class="console__title" style="color:rgba(255,255,255,1)">${name}</h3>
+                </div>
+                <div class="console__date" style="width:100%">
+                    <h3 class="console__title console__date-text"></h3>
+                </div>
+                <div class="console__text" style="width:100%"></div>
+            </div>
         </div>
-        <div class="console__console">
-            <div class="console__name">
-                <h3 id="${name}_title" class="console__title" style="color:rgba(255,255,255,1)">${name}</h3>
+    </div>`
+    } else {
+        console =
+            `
+        <div class="console" id="${name}">
+        <div class="console__inner">
+            <div class="console__buttons">
+                <button class="console__button" onclick="sendsig('${name}','r')">R</button>
+                <button class="console__button" onclick="sendsig('${name}','d')">D</button>
+                <button class="console__button" onclick="sendsig('${name}','a')">A</button>
             </div>
-            <div class="console__date">
-                <h3 class="console__title console__date-text"></h3>
+            <div class="console__console">
+                <div class="console__name">
+                    <h3 id="${name}_title" class="console__title" style="color:rgba(255,255,255,1)">${name}</h3>
+                </div>
+                <div class="console__date">
+                    <h3 class="console__title console__date-text"></h3>
+                </div>
+                <div class="console__text"></div>
             </div>
-            <div class="console__text"></div>
         </div>
     </div>
-</div>
-`
+`}
     document.getElementById("main").innerHTML += console
     elements = document.getElementsByClassName("console")
     elementsArray = Array.from(elements)
     elementsArray.forEach(element => element.querySelector(".console__text").scrollTop = element.querySelector(".console__text").scrollHeight)
 }
 
-async function reset(name) {
-    const response = await fetch(api + "/reset", { method: "POST", body: name.id })
+async function sendsig(name, sig) {
+    const response = await fetch(api + "/sig" + sig, { method: "POST", body: name })
 }
 
 setInterval(poll, 2000)

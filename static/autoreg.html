@@ -1,0 +1,39 @@
+<!-- trunk-ignore-all(prettier) -->
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Console</title>
+    <script src="ar.js"></script>
+
+</head>
+
+<body>
+    <div class="sel">
+        <select id="combo" onchange="onsel()">
+        </select>
+
+    </div>
+    <div style="width:100%;display: flex; flex-direction: row; margin: 20px;">
+        <div class="inp" style="width:30%">
+            <input style="width:100%" type="text" id="prefix" placeholder="Prefix">
+            <input style="width:100%" type="text" id="count" placeholder="Count">
+            <input style="width:100%" type="text" id="tables" placeholder="50K 500K 1M 5M 20M">
+            <input style="margin-right: -13px; margin-left: auto;" class="console__button" type="button" id="submit"
+                value="submit" onclick="autoreg()">
+        </div>
+
+        <div width="60%">
+            <p id="text" style="color: white;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi, tempore! Recusandae, alias voluptate nobis
+                voluptatibus itaque omnis nesciunt quam minus voluptatem consequatur earum fugiat? Accusamus eaque quis
+                labore nisi quo!</p>
+        </div>
+    </div>
+
+</body>
+
+
+</html>

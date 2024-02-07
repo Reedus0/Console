@@ -17,11 +17,13 @@
   padding: 0;
   margin: 0;
 }
-
+body{
+  padding: 0px;
+  background: rgb(20, 20, 20);
+}
 .main {
   min-width: 100vw;
   min-height: 100vh;
-  background: rgb(20, 20, 20);
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -43,6 +45,19 @@
   }
 }
 
+nav{
+  background-color: #232323;
+  padding: 7px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+.nav__button{
+  width: auto; 
+  height: auto; 
+  padding: 10px;
+  font-weight: 600;
+  margin-right: 4px;
+}
 .console {
   background: rgb(35, 35, 35);
   position: relative;
@@ -81,9 +96,59 @@
   display: flex;
 }
 
+.sel{
+  margin: 10px;
+  border-radius: 15px;
+  border: 1px solid rgb(255, 255, 255);
+  padding: 4px 4px 4px 8px;
+  width: fit-content;
+
+}
+.inp{
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+}
+input[type="text"] {
+  margin-bottom: 10px;
+  border-radius: 15px;
+  border: 1px solid rgb(255, 255, 255);
+  padding: 4px 4px 4px 8px;
+  width: fit-content;
+}
+input[type="button"]{
+  width: fit-content;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  border: 1px solid rgb(255, 255, 255);
+  padding: 4px 4px 4px 8px;
+}
+select {
+  background: none;
+  color: white;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+option {
+  border: none;
+  color: rgb(255, 255, 255);
+  background-color: #232323;
+  border:0px;
+  outline:0px;
+  font-weight: 500;
+  font-size: 14px;
+
+
+}
+
 .console__buttons {
   padding: 5px;
   border-right: 2px solid rgb(15, 15, 15);
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 767px) {
@@ -93,6 +158,10 @@
 }
 
 .console__button {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  padding-right: 2px;
+  padding-left: 2px;
   user-select: none;
   transition: all 0.3s ease 0s;
   font-weight: 700;
@@ -183,6 +252,7 @@
   padding: 5px;
   width: calc(100% - 10px);
   overflow-wrap: break-word;
+
 }
 
 @media (max-width: 767px) {
@@ -195,14 +265,22 @@
 
 .console__info {
   color: rgb(15, 194, 250);
+  font-size: 10px;
+
 }
 
 .console__error {
   color: rgb(255, 55, 45);
+  font-size: 10px;
+
 }
 .console__warn {
   color: rgb(255, 162, 41);
+  font-size: 10px;
+
 }
 .console__msg {
   color: rgb(194, 194, 194);
+  font-size: 10px;
+
 }
