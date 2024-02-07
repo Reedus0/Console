@@ -360,7 +360,7 @@ func RestartBots() {
 		fields := strings.Split(line, "*")
 		id, image := fields[0], fields[1]
 		fmt.Println(id, image)
-		if image == "pp" {
+		if strings.HasPrefix(image, "pp") {
 			RunShell("docker", "restart", id)
 		}
 	}
