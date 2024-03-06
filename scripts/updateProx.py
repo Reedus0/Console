@@ -20,7 +20,7 @@ for bot in bots:
             with open(f"/data/{bot}/"+file, 'r', encoding="utf-8") as f:
                 data = f.read()
             print(data)
-            proxies = re.findall(r"\"(?:.+)\" \"(?:.+)\" \"(?:.+)\" \"(.*)\" \"(.*)\"\n", data)[0]
+            proxies = re.findall(r"\"(?:.+)\" \"(?:.+)\" \"(?:.+)\" \"(.*)\" \"(.*)\"", data)[0]
             for p in proxies:
                 proxy = random.choice(proxy_list)
                 data = data.replace(p, proxy)
