@@ -19,6 +19,7 @@ for bot in bots:
         if file.endswith(".sh") and "start_" in file:
             with open(f"/data/{bot}/"+file, 'r', encoding="utf-8") as f:
                 data = f.read()
+            print(data)
             proxies = re.findall(r"\"(?:.+)\" \"(?:.+)\" \"(?:.+)\" \"(.*)\" \"(.*)\"\n", data)[0]
             for p in proxies:
                 proxy = random.choice(proxy_list)
