@@ -27,6 +27,6 @@ for bot in bots:
                 with open(f"/data/{bot}/"+file, 'w', encoding="utf-8") as f:
                     f.write(data)
                 counter += 1
-        print(counter)
+    print(counter)
 
 print("Done")
