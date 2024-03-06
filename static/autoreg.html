@@ -12,6 +12,11 @@
 </head>
 
 <body>
+    <nav>
+        <input type="button" onclick="document.location.href='index.html'" class="console__button" style="width: auto; height: auto; padding: 10px;font-weight: 600; margin-right: 4px;" value="Index">
+        <input type="button" onclick="document.location.href='autoreg.html'" class="console__button" style="width: auto; height: auto; padding: 10px;font-weight: 600; margin-right: 4px;" value="Auto reg">
+        <input type="button" onclick="document.location.href='proxy.html'" class="console__button" style="width: auto; height: auto; padding: 10px;font-weight: 600; margin-right: 4px;" value="Proxy">
+    </nav>
     <div class="sel">
         <select id="combo" onchange="onsel()">
         </select>
@@ -22,14 +27,11 @@
             <input style="width:100%" type="text" id="prefix" placeholder="Prefix">
             <input style="width:100%" type="text" id="count" placeholder="Count">
             <input style="width:100%" type="text" id="tables" placeholder="50K 500K 1M 5M 20M">
-            <input style="margin-right: -13px; margin-left: auto;" class="console__button" type="button" id="submit"
-                value="submit" onclick="autoreg()">
+            <input style="margin-right: -13px; margin-left: auto;" class="console__button" type="button" id="submit" value="submit" onclick="autoreg()">
         </div>
 
         <div width="60%">
-            <p id="text" style="color: white;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi, tempore! Recusandae, alias voluptate nobis
-                voluptatibus itaque omnis nesciunt quam minus voluptatem consequatur earum fugiat? Accusamus eaque quis
-                labore nisi quo!</p>
+            <p id="text" style="color: white;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi, tempore! Recusandae, alias voluptate nobis voluptatibus itaque omnis nesciunt quam minus voluptatem consequatur earum fugiat? Accusamus eaque quis labore nisi quo!</p>
         </div>
     </div>
 

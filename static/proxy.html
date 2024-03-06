@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css" />
+    <script src="proxy.js"></script>
+
+
+    <title>Proxy</title>
+</head>
+
+<body style="margin:0; width: 100%;height:100%">
+    <nav>
+        <input type="button" onclick="document.location.href='index.html'" class="console__button" style="width: auto; height: auto; padding: 10px;font-weight: 600; margin-right: 4px;" value="Index">
+        <input type="button" onclick="document.location.href='autoreg.html'" class="console__button" style="width: auto; height: auto; padding: 10px;font-weight: 600; margin-right: 4px;" value="Auto reg">
+        <input type="button" onclick="document.location.href='proxy.html'" class="console__button" style="width: auto; height: auto; padding: 10px;font-weight: 600; margin-right: 4px;" value="Proxy">
+    </nav>
+    <div style="display: flex; padding: 20px;">
+
+        <div style="flex: 1">
+            <textarea autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" id="proxy_list"></textarea>
+            <br>
+            <button class="console__button button" onclick="update()">
+                Сохранить и обновить
+
+            </button>
+            <button class="console__button button" onclick="check()">
+                Проверить прокси
+
+            </button>
+        </div>
+        <div style="flex: 1">
+            <textarea readonly id="proxy_check">
+                Тут будут находиться результаты проверки прокси
+        </textarea>
+        </div>
+    </div>
+    <script>
+        http_get()
+    </script>
+
+</body>
+
+</html>

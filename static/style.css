@@ -284,3 +284,30 @@ option {
   font-size: 10px;
 
 }
+
+#proxy_list{
+}
+textarea{
+  padding: 5px;
+  border-style: none;
+  border-radius: 10px;
+  background-color: #232323;
+  color: white;
+  width: calc(100% - 20px);
+  height: 600px;
+}
+textarea:focus {
+  border-radius: 5px;
+  outline:1px dotted rgb(255, 255, 255) !important;
+}
+
+
+.button{
+  width: max-content;
+  height: fit-content;
+  border-radius: 15px;
+  border: 1px solid rgb(255, 255, 255);
+  padding: 4px 4px 4px 8px;
+  margin-top: 10px;
+  margin-left: calc(90%-width);
+}

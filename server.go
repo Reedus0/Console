@@ -180,6 +180,33 @@ func GetOut(name string, arg ...string) string {
 	return res
 
 }
+
+func CheckProxy(proxy_list string) [][]string {
+	//uri = https://api.proxy-checker.net/api/proxy-checker/
+
+	// filename := "prox.txt"
+	// filedata, _ := os.ReadFile(filename)
+	data := []byte(`proxy_list=` + strings.ReplaceAll(strings.ReplaceAll(proxy_list, "\n", "%0A"), ":", "%3A"))
+	req, err := http.NewRequest("POST", "https://api.proxy-checker.net/api/proxy-checker/", bytes.NewReader(data))
+	if err != nil {
+		fmt.Println(err.Error())
+	} else {
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println(resp.Status)
+			body, _ := io.ReadAll(resp.Body)
+			reg := regexp.MustCompile(`"initial": "([^,]+)", "valid": ([^,]+)`)
+			res := reg.FindAllStringSubmatch(string(body), -1)
+			return res
+		}
+
+	}
+	return [][]string{}
+}
+
 func RunShell(name string, arg ...string) int {
 	log("Running: " + name + " " + strings.Join(arg, " "))
 	c := exec.Command(name, arg...)
@@ -250,6 +277,7 @@ func (h *apiHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		clearCache()
 		log("cache cleared")
 		fmt.Fprint(w, "OK")
+
 	case "/autoReg":
 		fmt.Println("autoReg")
 		body, _ := io.ReadAll(req.Body)
@@ -258,6 +286,41 @@ func (h *apiHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(prefix, count, folder, tables)
 		RunShell("/usr/local/bin/python", "scripts/autoreg.py", prefix, count, folder, tables)
 		fmt.Fprint(w, "OK")
+
+	case "/getProxyes":
+		fmt.Println("getProxyes")
+		data, err := os.ReadFile("prox.txt")
+		if err != nil {
+			w.Write([]byte(err.Error()))
+			//send 500 status code
+			w.WriteHeader(500)
+		} else {
+			w.Write(data)
+		}
+	case "/checkProxy":
+		fmt.Println("checkProxy")
+		data, err := io.ReadAll(req.Body)
+		if err != nil {
+			w.Write([]byte(err.Error()))
+		} else {
+			res := CheckProxy(string(data))
+			for _, sr := range res {
+				w.Write([]byte(sr[2]))
+				w.Write([]byte(" "))
+				w.Write([]byte(sr[1]))
+				w.Write([]byte("\n"))
+			}
+
+		}
+	case "/updateProxy":
+		fmt.Println("updateProxy")
+		data, err := io.ReadAll(req.Body)
+		if err != nil {
+			w.Write([]byte(err.Error()))
+		}
+		os.WriteFile("prox.txt", data, 0644)
+
+		w.Write([]byte(GetOut("/usr/local/bin/python", "scripts/updateProx.py")))
 
 	case "/getFolders":
 		Fdatas := []FilderData{}
@@ -419,6 +482,7 @@ func main() {
 		time.Sleep(1 * time.Second)
 		go log("server started")
 		HttpLogsServer()
+
 	default:
 		data := `python main.py "testdjf2l60gi2" "testdjf2l60gi2" "50K 500K 1M 5M 20M" "80.243.133.41:8000:U5apE5:9aETez" "45.132.21.144:8000:1znyDA:AfmfRG"
 		`
