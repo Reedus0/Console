@@ -368,7 +368,8 @@ func AutoReplase(name string) {
 	data, folder := DeleteBot(name)
 	re := regexp.MustCompile(`[^ ]+ [^ ]+ [^ ]+ [^ ]+ "([^"]+)"`)
 	tables := re.FindStringSubmatch(data)[1]
-	out := GetOut("/usr/local/bin/python", "scripts/autoreg.py", "replase", "1", folder, tables)
+	currentTime := time.Now()
+	out := GetOut("/usr/local/bin/python", "scripts/autoreg.py", "replaсe"+currentTime.Format("2006-01-02"), "1", folder, tables)
 	re = regexp.MustCompile(`{([^}]+)}`)
 	logins := re.FindStringSubmatch(out)
 	for _, cont := range GetContainers() {
