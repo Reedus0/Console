@@ -1,5 +1,5 @@
 /* trunk-ignore-all(prettier) */
-const modified = {}
+const modified = { server_log: 0 }
 const api = `/api`
 
 async function poll() {
@@ -15,7 +15,7 @@ function update(logs) {
         if (modified[bot_name] != arr.Timestamp) {
             if (modified[bot_name] == undefined) {
                 generateConsole(bot_name)
-                //rouind to integer
+                    //rouind to integer
                 modified[bot_name] = arr.Timestamp
                 setInterval(() => {
                     document.getElementById(bot_name).querySelector(".console__date-text").innerHTML = `${Math.round(Date.now() / 1000 - modified[bot_name])} seconds ago`
@@ -30,13 +30,13 @@ function update(logs) {
             const element = document.getElementById(bot_name)
             const consoleText = element.querySelector(".console__text")
             arr = arr.Logs
-            // if (bot_name == "server_log") {
-            //     arr = arr[0].split("\n")
-            //     arr = arr.reverse()
+                // if (bot_name == "server_log") {
+                //     arr = arr[0].split("\n")
+                //     arr = arr.reverse()
 
             // }
             arr = arr.reverse()
-            //reverse arr
+                //reverse arr
             arr = arr.map((ell) => {
                 msg = ell.split(" ")
                 type = msg.shift()
@@ -62,6 +62,7 @@ function deleteConsole(name) {
     document.getElementById(name).remove()
     delete modified[name]
 }
+
 function format_date(date) {
     hour = date.getHours()
     minute = date.getMinutes()
@@ -113,7 +114,8 @@ function generateConsole(name) {
             </div>
         </div>
     </div>
-`}
+`
+    }
     document.getElementById("main").innerHTML += console
     elements = document.getElementsByClassName("console")
     elementsArray = Array.from(elements)
