@@ -1,0 +1,5 @@
+.trunk/*
+.vscode/*
+server.exe
+__pycache__/*
+server

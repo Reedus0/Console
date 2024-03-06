@@ -1,0 +1,40 @@
+<!-- trunk-ignore-all(prettier) -->
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Console</title>
+</head>
+
+<body style="margin:0">
+    <nav>
+        <input type="button" onclick="sendsig('all','a')" class="console__button" style="width: auto; height: auto; padding: 10px;font-weight: 600; margin-right: 4px;" value="Restart all">
+        <input type="button" onclick="document.location.href='autoreg.html'" class="console__button" style="width: auto; height: auto; padding: 10px;font-weight: 600; margin-right: 4px;" value="Auto reg">
+        <input type="button" onclick="sendsig('','clear')" class="console__button" style="width: auto; height: auto; padding: 10px;font-weight: 600; margin-right: 4px;" value="Clear cache">
+        <input type="button" onclick="document.location.href='proxy.html'" class="console__button" style="width: auto; height: auto; padding: 10px;font-weight: 600; margin-right: 4px;" value="Proxy">
+    </nav>
+    <div class="main">
+
+        <div class="main__inner" id="main">
+            <div class="console" id="server_log">
+                <div class="console__inner">
+                    <div class="console__console" style="width:100%">
+                        <div class="console__name" style="width:100%">
+                            <h3 id="server_log_title" class="console__title" style="color:rgba(255,255,255,1)">server_log</h3>
+                        </div>
+                        <div class="console__date" style="width:100%">
+                            <h3 class="console__title console__date-text"></h3>
+                        </div>
+                        <div class="console__text" style="width:100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="index.js"></script>
+</body>
+
+</html>
